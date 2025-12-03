@@ -14,8 +14,6 @@ import org.springframework.dao.DataRetrievalFailureException;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
 public class PlayerServiceTest {
 
     @Mock
@@ -49,10 +47,9 @@ public class PlayerServiceTest {
         Mockito.when(playerRepository.findAll()).thenThrow(new DataRetrievalFailureException("Data access error"));
 
         // When / Then
-        Exception exception = assertThrows(PlayerDataRetrievalException.class, () -> {
-            playerService.getAllPlayers();
-        });
-        Assertions.assertThat(exception.getMessage()).isEqualTo("Could not retrieve player data");
+        Assertions.assertThatThrownBy(() -> playerService.getAllPlayers())
+                .isInstanceOf(PlayerDataRetrievalException.class)
+                .hasMessage("Could not retrieve player data");
     }
 
     @Test
@@ -75,9 +72,8 @@ public class PlayerServiceTest {
         Mockito.when(playerRepository.findOneByLastNameIgnoreCase(unknownPlayer)).thenReturn(Optional.empty());
 
         // When / Then
-        Exception exception = assertThrows(PlayerNotFoundException.class, () -> {
-            playerService.getByLastName(unknownPlayer);
-        });
-        Assertions.assertThat(exception.getMessage()).isEqualTo("Player with last name doe could not be found.");
+        Assertions.assertThatThrownBy(() -> playerService.getByLastName(unknownPlayer))
+                .isInstanceOf(PlayerNotFoundException.class)
+                .hasMessage("Player with last name doe could not be found.");
     }
 }
