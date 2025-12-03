@@ -83,9 +83,8 @@ public class PlayerServiceIntegrationTest {
         String playerToDelete = "DoeTest";
 
         // When / Then
-        Exception exception = assertThrows(PlayerNotFoundException.class, () -> {
-            playerService.delete(playerToDelete);
-        });
-        Assertions.assertThat(exception.getMessage()).isEqualTo("Player with last name DoeTest could not be found.");
+        Assertions.assertThatThrownBy(() -> playerService.delete(playerToDelete))
+                .isInstanceOf(PlayerNotFoundException.class)
+                .hasMessage("Player with last name DoeTest could not be found.");
     }
 }
